@@ -1,4 +1,4 @@
-# 러브레이스 동적 날씨 카드 (feat. Naver weather)
+# 러브레이스 움직이는 날씨 카드 (feat. Naver weather)
 
 Originally created for the [old UI](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008) converted by @arsaboo and @ciotlosm to [Lovelace](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008/291) and converted by @bramkragten. 
 
