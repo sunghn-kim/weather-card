@@ -51,6 +51,7 @@ const windDirections = [
   "N",
 ];
 
+
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "weather-card",
@@ -273,79 +274,80 @@ class WeatherCard extends LitElement {
           )}') no-repeat; background-size: contain;"
           >${stateObj.state}
         </span>
-        ${this._config.name
-          ? html` <span class="title"> ${this._config.name} </span> `
-          : ""}
-        <span class="temp"
-          >${this.getUnit("temperature") == "°F"
-            ? Math.round(stateObj.attributes.temperature)
-            : stateObj.attributes.temperature}</span
-        >
+       <span class="title">${this.hass.states["sensor.naver_weather_nowweather_1"].state}<br>
+		          <span class="subinfo">
+		          ${this.hass.states["sensor.naver_weather_todaymintemp_1"].state}° / <span class="highTemp">${this.hass.states["sensor.naver_weather_todaymaxtemp_1"].state}°</span>
+		          <br>
+		          습도 ${stateObj.attributes.humidity}% 
+		          ${this.hass.states["sensor.naver_weather_windbearing_1"].state}풍 ${this.hass.states["sensor.naver_weather_windspeed_1"].state}<span class="unit"> m/s</span>
+                  </span>
+       </span>
+        <span class="temp" style="color: ${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state < this.hass.states["sensor.naver_weather_nowtemp_1"].state ? 'deepbluesky' : this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state > this.hass.states["sensor.naver_weather_nowtemp_1"].state ? 'orange' : ''};"
+          >${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state}</span>
         <span class="tempc"> ${this.getUnit("temperature")}</span>
       </div>
     `;
   }
 
-  renderDetails(stateObj, lang) {
+  renderDetails(stateObj) {
     const sun = this.hass.states["sun.sun"];
     let next_rising;
     let next_setting;
 
     if (sun) {
-      next_rising = new Date(sun.attributes.next_rising).toLocaleTimeString(
-        lang,
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-        }
-      );
-      next_setting = new Date(sun.attributes.next_setting).toLocaleTimeString(
-        lang,
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-        }
-      );
+      next_rising = new Date(sun.attributes.next_rising);
+      next_setting = new Date(sun.attributes.next_setting);
     }
 
     this.numberElements++;
 
     return html`
       <ul class="variations ${this.numberElements > 1 ? "spacer" : ""}">
+       ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state !== '비안옴'
+            ? html`
+                <li>
+		          <ha-icon icon="${this.hass.states['sensor.naver_weather_nowweather_1'].state !== '비' ? 'mdi:umbrella-closed-variant' : 'mdi:umbrella'}" style="color: rgb(224, 161, 49)"></ha-icon>
+                  <span style="color: ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state !== '비안옴' ? 'rgb(224, 161, 49)' : ''};"> ${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state} 비 내림</span>
+                </li>
+              `
+            : ""}
+		${this.hass.states["sensor.naver_weather_rainystarttmr_1"].state !== '비안옴'
+            ? html`
+                <li>
+                  <ha-icon icon="${this.hass.states['sensor.naver_weather_rainfall_1'].state == 0 ? 'mdi:weather-cloudy' : this.hass.states['sensor.naver_weather_rainfall_1'].state > 0 && this.hass.states['sensor.naver_weather_rainfall_1'].state <= 3 ? 'mdi:weather-rainy' : this.hass.states['sensor.naver_weather_rainfall_1'].state >= 4 ? 'mdi:weather-pouring' : ''}" style="color: rgb(224, 161, 49)"></ha-icon>
+                  예상 강수량 ${this.hass.states["sensor.naver_weather_rainfall_1"].state}㎜
+                </li>
+              `
+            : ""}
         <li>
-          <ha-icon icon="mdi:water-percent"></ha-icon>
-          ${stateObj.attributes.humidity}<span class="unit"> % </span>
+          <ha-icon icon= "mdi:blur" style="color: ${this.hass.states["sensor.naver_weather_finedustgrade_1"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.naver_weather_finedustgrade_1"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.naver_weather_finedustgrade_1"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.naver_weather_finedustgrade_1"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          미세먼지 ${this.hass.states["sensor.naver_weather_finedustgrade_1"].state}
         </li>
         <li>
-          <ha-icon icon="mdi:weather-windy"></ha-icon> ${windDirections[
-            parseInt((stateObj.attributes.wind_bearing + 11.25) / 22.5)
-          ]}
-          ${stateObj.attributes.wind_speed}<span class="unit">
-            ${this.getUnit("length")}/h
-          </span>
+          <ha-icon icon="mdi:sun-wireless-outline" style="color: ${this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '높음' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '매우높음' ? 'red' : this.hass.states["sensor.naver_weather_todayuvgrade_1"].state === '위험' ? 'violet' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          자외선 ${this.hass.states["sensor.naver_weather_todayuvgrade_1"].state}
         </li>
         <li>
-          <ha-icon icon="mdi:gauge"></ha-icon>
-          ${stateObj.attributes.pressure}
-          <span class="unit"> ${this.getUnit("air_pressure")} </span>
+          <ha-icon icon="mdi:blur-linear" style="color: ${this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          초미세먼지 ${this.hass.states["sensor.naver_weather_ultrafinedustgrade_1"].state}
         </li>
         <li>
-          <ha-icon icon="mdi:weather-fog"></ha-icon> ${stateObj.attributes
-            .visibility}<span class="unit"> ${this.getUnit("length")} </span>
+          <ha-icon icon="mdi:alert-circle-outline" style="color: ${this.hass.states["sensor.naver_weather_ozongrade_1"].state === '좋음' ? 'rgb(13, 93, 148)' : this.hass.states["sensor.naver_weather_ozongrade_1"].state === '보통' ? 'rgb(13, 187, 74)' : this.hass.states["sensor.naver_weather_ozongrade_1"].state === '나쁨' ? 'rgb(224, 161, 49)' : this.hass.states["sensor.naver_weather_ozongrade_1"].state === '매우나쁨' ? 'red' : 'rgba(255, 255, 255, 0)'};"></ha-icon>
+          오존 ${this.hass.states["sensor.naver_weather_ozongrade_1"].state}
         </li>
         ${next_rising
           ? html`
               <li>
-                <ha-icon icon="mdi:weather-sunset-up"></ha-icon>
-                ${next_rising}
+                <ha-icon icon="mdi:weather-sunset-up" style="color: orange"></ha-icon>
+                ${next_rising.toLocaleTimeString()}
               </li>
             `
           : ""}
         ${next_setting
           ? html`
               <li>
-                <ha-icon icon="mdi:weather-sunset-down"></ha-icon>
-                ${next_setting}
+                <ha-icon icon="mdi:weather-sunset-down" style="color: red"></ha-icon>
+                ${next_setting.toLocaleTimeString()}
               </li>
             `
           : ""}
@@ -386,17 +388,9 @@ class WeatherCard extends LitElement {
                   style="background: none, url('${this.getWeatherIcon(
                     daily.condition.toLowerCase()
                   )}') no-repeat; background-size: contain"
-                ></i>
-                <div class="highTemp">
-                  ${daily.temperature}${this.getUnit("temperature")}
-                </div>
-                ${daily.templow !== undefined
-                  ? html`
-                      <div class="lowTemp">
-                        ${daily.templow}${this.getUnit("temperature")}
-                      </div>
-                    `
-                  : ""}
+                ></i><br>
+                <span class="lowTemp">${daily.templow}°</span>/<span class="highTemp">${daily.temperature}°</span>
+                
                 ${!this._config.hide_precipitation &&
                 daily.precipitation !== undefined &&
                 daily.precipitation !== null
@@ -483,23 +477,29 @@ class WeatherCard extends LitElement {
 
       .title {
         position: absolute;
-        left: 3em;
+        left: 7em;
+        top: 1.1em;
         font-weight: 300;
-        font-size: 3em;
+        font-size: 1.5em;
         color: var(--primary-text-color);
+      }
+	  
+	  .subinfo {
+        font-size: 0.7em;
+        color: var(--secondary-text-color);
       }
 
       .temp {
         font-weight: 300;
-        font-size: 4em;
+        font-size: 2.5em;
         color: var(--primary-text-color);
         position: absolute;
-        right: 1em;
+        right: 1.2em;
       }
 
       .tempc {
         font-weight: 300;
-        font-size: 1.5em;
+        font-size: 1.2em;
         vertical-align: super;
         color: var(--primary-text-color);
         position: absolute;
@@ -507,23 +507,39 @@ class WeatherCard extends LitElement {
         margin-top: -14px;
         margin-right: 7px;
       }
+      .hum {
+        font-weight: 300;
+        font-size: 0.7em;
+        color: var(--primary-text-color);
+        position: absolute;
+        right: 1.2em;
+        margin-top: -25px;
+        margin-right: 7px;
+      }
 
       @media (max-width: 460px) {
         .title {
-          font-size: 2.2em;
-          left: 4em;
+          font-size: 1.5em;
+          left: 6em;
         }
         .temp {
           font-size: 3em;
         }
         .tempc {
-          font-size: 1em;
+          font-size: 1.2em;
         }
       }
 
       .current {
         padding: 1.2em 0;
         margin-bottom: 3.5em;
+      }
+
+      .weathercast {
+        position: absolute;
+        left: 3em;
+        font-weight: 300;
+        color: var(--primary-text-color);
       }
 
       .variations {
@@ -626,7 +642,7 @@ class WeatherCard extends LitElement {
 
       .weather {
         font-weight: 300;
-        font-size: 1.5em;
+        font-size: 1em;
         color: var(--primary-text-color);
         text-align: left;
         position: absolute;
