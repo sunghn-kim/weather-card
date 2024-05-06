@@ -8,19 +8,15 @@ This card uses the awesome [animated SVG weather icons by amCharts](https://www.
 
 Thanks for all picking this card up.
 
-## 설치법:
-
-**Special Thanks**
-
-HACS 네이버 날씨 제작자 miumida님
-<br>
-
 **변경사항**
 
 | Version | Date        | 내용              |
 | :-----: | :---------: | --------------------------------------------------------------------------------------- |
 | v1.0  | 2024.04.25  | First version  |
 | v1.1  | 2024.05.02  | 체감온도 현재온도 차이에 따른 색상 변화 안되는 문제 해결  |
+
+
+## 설치법
 
 # 주의사항
 
@@ -31,6 +27,7 @@ HACS 네이버 날씨 제작자 miumida님
 # 설치방법
 
 1. [네이버 날씨](https://github.com/miumida/naver_weather)설치
+   **Special Thanks** HACS 네이버 날씨 제작자 miumida님
 2. Weather-card 설치 ( HACS -> frontend -> : -> custom repositories)
 ```yaml
    repositories : https://github.com/plplaaa2/weather-card
