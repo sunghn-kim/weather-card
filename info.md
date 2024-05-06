@@ -1,77 +1,48 @@
-# Lovelace animated weather card
+# 러브레이스 동적 날씨 카드 (feat. Naver weather)
 
-Originally created for the [old UI](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008) converted by @arsaboo and @ciotlosm to [Lovelace](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008/291) and now converted to Lit to make it even better.
+Originally created for the [old UI](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008) converted by @arsaboo and @ciotlosm to [Lovelace](https://community.home-assistant.io/t/custom-ui-weather-state-card-with-a-question/23008/291) and converted by @bramkragten. 
 
 This card uses the awesome [animated SVG weather icons by amCharts](https://www.amcharts.com/free-animated-svg-weather-icons/).
 
-![Weather Card](https://github.com/bramkragten/custom-ui/blob/master/weather-card/weather-card.gif?raw=true)
+![image](https://github.com/plplaaa2/HA-weather-card-custom/assets/124797654/ba486511-69c9-4576-8465-4f42550ed77b)
 
 Thanks for all picking this card up.
 
-## Installation:
+## 설치법:
 
-### If you are using Firefox:
+**Special Thanks**
 
-Firefox < 66 does not support all the needed functions yet for the editor.
-You change this by enabling `javascript.options.dynamicImport` in `about:config`.
+HACS 네이버 날씨 제작자 miumida님
+<br>
 
-Add the following to resources in your lovelace config:
+**변경사항**
 
+| Version | Date        | 내용              |
+| :-----: | :---------: | --------------------------------------------------------------------------------------- |
+| v1.0  | 2024.04.25  | First version  |
+| v1.1  | 2024.05.02  | 체감온도 현재온도 차이에 따른 색상 변화 안되는 문제 해결  |
+
+# 주의사항
+
+기본 센서 값이 'sensor.naver~' 로 시작되는 것만 사용 가능하기 때문에 한글을 영문으로 쓴 센서값 'sensor.gangsuryang' 일 경우
+기기 및 서비스 -> 네이버 날씨 -> 구성요소에 들어가 센서 값을 'sensor.naver~' 로 다시 수정하여야 사용 가능
+
+# 설치방법
+
+1. [네이버 날씨](https://github.com/miumida/naver_weather)설치
+2. Weather-card 설치 ( HACS -> frontend -> : -> custom repositories)
 ```yaml
-resources:
-  - url: /hacsfiles/weather-card/weather-card.js
-    type: module
+   repositories
+   https://github.com/plplaaa2/weather-card
+   category
+   lovelace
 ```
+3. 
 
-## Configuration:
 
-And add a card with type `custom:weather-card`:
+# 쉬운 적용방법
 
-```yaml
-- type: custom:weather-card
-  entity: weather.yourweatherentity
-  name: Optional name
-```
-
-If you want to use your local icons add the location to the icons:
-
-```yaml
-- type: custom:weather-card
-  entity: weather.yourweatherentity
-  icons: "/community_plugin/weather-card/icons/"
-```
-
-You can choose wich elements of the weather card you want to show:
-
-The 3 different rows, being:
-
-- The current weather icon, the current temperature and title
-- The details about the current weather
-- The 5 day forecast
-
-```yaml
-type: custom:weather-card
-entity: weather.yourweatherentity
-current: true
-details: false
-forecast: true
-```
-
-If you want to show the sunrise and sunset times, make sure the `sun` component is enabled:
-
-```yaml
-# Example configuration.yaml entry
-sun:
-```
-
-### Dark Sky:
-
-When using Dark Sky you should put the mode to `daily` if you want a daily forecast with highs and lows.
-
-```yaml
-# Example configuration.yaml entry
-weather:
-  - platform: darksky
-    api_key: YOUR_API_KEY
-    mode: daily
-```
+1. 대쉬보드 -> 편집 -> 리소스 관리
+2. 예) /hacsfiles/weather-card/weather-card.js?hacstag=192732636150 선택
+3. hacstag=192732636150 <- 숫자 하나 더 추가
+<br>※ 브라우저 캐시 삭제 안해도 됩니다.
