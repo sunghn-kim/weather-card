@@ -33,10 +33,8 @@ HACS 네이버 날씨 제작자 miumida님
 1. [네이버 날씨](https://github.com/miumida/naver_weather)설치
 2. Weather-card 설치 ( HACS -> frontend -> : -> custom repositories)
 ```yaml
-   repositories
-   https://github.com/plplaaa2/weather-card
-   category
-   lovelace
+   repositories : https://github.com/plplaaa2/weather-card
+   category : lovelace
 ```
 3. repositories 목록에서 plplaaa2/weather-card 클릭
 4. 다운로드
