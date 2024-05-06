@@ -38,12 +38,6 @@ HACS 네이버 날씨 제작자 miumida님
    category
    lovelace
 ```
-3. 
-
-
-# 쉬운 적용방법
-
-1. 대쉬보드 -> 편집 -> 리소스 관리
-2. 예) /hacsfiles/weather-card/weather-card.js?hacstag=192732636150 선택
-3. hacstag=192732636150 <- 숫자 하나 더 추가
-<br>※ 브라우저 캐시 삭제 안해도 됩니다.
+3. repositories 목록에서 plplaaa2/weather-card 클릭
+4. 다운로드
+5. 대쉬 보드 편집 -> 카드 추가 -> weather로 검색 후 사용자 weather-card 추가
