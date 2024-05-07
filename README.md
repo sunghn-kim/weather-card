@@ -4,6 +4,8 @@ Originally created for the [old UI](https://community.home-assistant.io/t/custom
 
 This card uses the awesome [animated SVG weather icons by amCharts](https://www.amcharts.com/free-animated-svg-weather-icons/).
 
+Thanks for all picking this card up.
+
 # 적용 예
 
 ![image](https://github.com/plplaaa2/HA-weather-card-custom/assets/124797654/17ff189d-5a7e-4c97-8838-1cdc1886e2ac)
@@ -17,8 +19,6 @@ This card uses the awesome [animated SVG weather icons by amCharts](https://www.
 ![image](https://github.com/plplaaa2/HA-weather-card-custom/assets/124797654/ba486511-69c9-4576-8465-4f42550ed77b)
 
 비 올때
-
-Thanks for all picking this card up.
 
 **변경사항**
 
