@@ -4,7 +4,19 @@ Originally created for the [old UI](https://community.home-assistant.io/t/custom
 
 This card uses the awesome [animated SVG weather icons by amCharts](https://www.amcharts.com/free-animated-svg-weather-icons/).
 
+# 적용 예
+
+![image](https://github.com/plplaaa2/HA-weather-card-custom/assets/124797654/17ff189d-5a7e-4c97-8838-1cdc1886e2ac)
+
+ 평소
+
+![image](https://github.com/plplaaa2/HA-weather-card-custom/assets/124797654/62c5b8c0-efb1-46ce-98d1-e4aba81b76a4)
+
+비가 오려고 할 때
+
 ![image](https://github.com/plplaaa2/HA-weather-card-custom/assets/124797654/ba486511-69c9-4576-8465-4f42550ed77b)
+
+비 올때
 
 Thanks for all picking this card up.
 
