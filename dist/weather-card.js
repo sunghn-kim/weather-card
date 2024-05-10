@@ -282,7 +282,7 @@ class WeatherCard extends LitElement {
 		          ${this.hass.states["sensor.naver_weather_windbearing_1"].state}풍 ${this.hass.states["sensor.naver_weather_windspeed_1"].state}<span class="unit"> m/s</span>
                   </span>
        </span>
-        <span class="temp" style="color: ${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state < this.hass.states["sensor.naver_weather_nowtemp_1"].state ? 'deepbluesky' : this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state > this.hass.states["sensor.naver_weather_nowtemp_1"].state ? 'orange' : ''};"
+        <span class="temp" style="color: ${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state < this.hass.states["sensor.naver_weather_nowtemp_1"].state ? 'rgb(0,191,255)' : this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state > this.hass.states["sensor.naver_weather_nowtemp_1"].state ? 'orange' : ''};"
           >${this.hass.states["sensor.naver_weather_todayfeeltemp_1"].state}</span>
         <span class="tempc"> ${this.getUnit("temperature")}</span>
       </div>
