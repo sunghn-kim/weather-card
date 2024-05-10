@@ -32,8 +32,10 @@ Thanks for all picking this card up.
 
 ## 주의사항
 
-기본 센서 값이 'sensor.naver~' 로 시작되는 것만 사용 가능하기 때문에<br> 
-한글을 영문으로 쓴 센서값 'sensor.gangsuryang' 일 경우<br> 
+기본 센서 값이 'sensor.naver~' 로 시작되는 것만 사용 가능하기 때문에
+
+한글을 영문으로 쓴 센서값 'sensor.gangsuryang' 일 경우
+
 기기 및 서비스 -> 네이버 날씨 -> 구성요소에 들어가 센서 값을 'sensor.naver~' 로 다시 수정하여야 사용 가능
 
 ## 설치방법
