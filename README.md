@@ -34,9 +34,11 @@ Thanks for all picking this card up.
 
 기본 센서 값이 'sensor.naver~' 로 시작되는 것만 사용 가능하기 때문에
 
-한글을 영문으로 쓴 센서값 'sensor.gangsuryang' 일 경우
+예를 들어 한글을 영문으로 쓴 센서값 'sensor.gangsuryang' 일 경우 기기 및 서비스 -> 네이버 날씨 -> 구성요소에 있는 
 
-기기 및 서비스 -> 네이버 날씨 -> 구성요소에 들어가 센서 값을 'sensor.naver~' 로 다시 수정하여야 사용 가능
+모든 센서 값을 'sensor.naver~' 로 다시 수정하여야 사용 가능
+
+![image](https://github.com/plplaaa2/HA-weather-card-custom/assets/124797654/bf9cdd58-a41e-439f-b35d-f1776ff557c1)
 
 ## 설치방법
 
@@ -50,3 +52,6 @@ Thanks for all picking this card up.
 3. repositories 목록에서 plplaaa2/weather-card 클릭
 4. 다운로드
 5. 대쉬 보드 편집 -> 카드 추가 -> weather로 검색 후 사용자 weather-card 추가
+
+
+
