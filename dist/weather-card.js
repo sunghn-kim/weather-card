@@ -389,7 +389,11 @@ class WeatherCard extends LitElement {
                     daily.condition.toLowerCase()
                   )}') no-repeat; background-size: contain"
                 ></i><br>
-                <span class="lowTemp">${daily.templow}°</span>/<span class="highTemp">${daily.temperature}°</span>
+                ${daily.templow !== undefined
+                  ? html`
+                      <span class="lowTemp">${daily.templow}°/</span>
+                    `
+                  : ""}<span class="highTemp">${daily.temperature}°</span>
                 
                 ${!this._config.hide_precipitation &&
                 daily.precipitation !== undefined &&
