@@ -1,232 +1,269 @@
-const LitElement = customElements.get("ha-panel-lovelace")
-  ? Object.getPrototypeOf(customElements.get("ha-panel-lovelace"))
-  : Object.getPrototypeOf(customElements.get("hc-lovelace"));
+const LitElement = customElements.get("ha-panel-lovelace") ?
+	Object.getPrototypeOf(customElements.get("ha-panel-lovelace")) :
+	Object.getPrototypeOf(customElements.get("hc-lovelace"));
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 const weatherIconsDay = {
-  clear: "day",
-  "clear-night": "night",
-  cloudy: "cloudy",
-  fog: "cloudy",
-  hail: "rainy-7",
-  lightning: "thunder",
-  "lightning-rainy": "thunder",
-  partlycloudy: "cloudy-day-3",
-  pouring: "rainy-6",
-  rainy: "rainy-5",
-  snowy: "snowy-6",
-  "snowy-rainy": "rainy-7",
-  sunny: "day",
-  windy: "cloudy",
-  "windy-variant": "cloudy-day-3",
-  exceptional: "!!",
+	clear: "day",
+	"clear-night": "night",
+	cloudy: "cloudy",
+	fog: "cloudy",
+	hail: "rainy-7",
+	lightning: "thunder",
+	"lightning-rainy": "thunder",
+	partlycloudy: "cloudy-day-3",
+	pouring: "rainy-6",
+	rainy: "rainy-5",
+	snowy: "snowy-6",
+	"snowy-rainy": "rainy-7",
+	sunny: "day",
+	windy: "cloudy",
+	"windy-variant": "cloudy-day-3",
+	exceptional: "!!",
 };
 
 const weatherIconsNight = {
-  ...weatherIconsDay,
-  clear: "night",
-  sunny: "night",
-  partlycloudy: "cloudy-night-3",
-  "windy-variant": "cloudy-night-3",
+	...weatherIconsDay,
+	clear: "night",
+	sunny: "night",
+	partlycloudy: "cloudy-night-3",
+	"windy-variant": "cloudy-night-3",
 };
 
 const windDirections = [
-  "N",
-  "NNE",
-  "NE",
-  "ENE",
-  "E",
-  "ESE",
-  "SE",
-  "SSE",
-  "S",
-  "SSW",
-  "SW",
-  "WSW",
-  "W",
-  "WNW",
-  "NW",
-  "NNW",
-  "N",
+	"N",
+	"NNE",
+	"NE",
+	"ENE",
+	"E",
+	"ESE",
+	"SE",
+	"SSE",
+	"S",
+	"SSW",
+	"SW",
+	"WSW",
+	"W",
+	"WNW",
+	"NW",
+	"NNW",
+	"N",
 ];
-
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "weather-card",
-  name: "Weather Card",
-  description: "A custom weather card with animated icons.",
-  preview: true,
-  documentationURL: "https://github.com/bramkragten/weather-card",
+	type: "weather-card",
+	name: "Weather Card",
+	description: "A custom weather card with animated icons.",
+	preview: true,
+	documentationURL: "https://github.com/bramkragten/weather-card",
 });
 
 const fireEvent = (node, type, detail, options) => {
-  options = options || {};
-  detail = detail === null || detail === undefined ? {} : detail;
-  const event = new Event(type, {
-    bubbles: options.bubbles === undefined ? true : options.bubbles,
-    cancelable: Boolean(options.cancelable),
-    composed: options.composed === undefined ? true : options.composed,
-  });
-  event.detail = detail;
-  node.dispatchEvent(event);
-  return event;
+	options = options || {};
+	detail = detail === null || detail === undefined ? {} : detail;
+	const event = new Event(type, {
+		bubbles: options.bubbles === undefined ? true : options.bubbles,
+		cancelable: Boolean(options.cancelable),
+		composed: options.composed === undefined ? true : options.composed,
+	});
+	event.detail = detail;
+	node.dispatchEvent(event);
+	return event;
 };
 
 function hasConfigOrEntityChanged(element, changedProps) {
-  if (changedProps.has("_config") || changedProps.has("_forecastEvent")) {
-    return true;
-  }
+	if (changedProps.has("_config") || changedProps.has("_forecastEvent")) {
+		return true;
+	}
 
-  if (!changedProps.has("hass")) {
-    return false;
-  }
+	if (!changedProps.has("hass")) {
+		return false;
+	}
 
-  const oldHass = changedProps.get("hass");
-  if (oldHass) {
-    return (
-      oldHass.states[element._config.entity] !==
-        element.hass.states[element._config.entity] ||
-      oldHass.states["sun.sun"] !== element.hass.states["sun.sun"]
-    );
-  }
+	const oldHass = changedProps.get("hass");
+	if (oldHass) {
+		return (
+			oldHass.states[element._config.entity] !==
+			element.hass.states[element._config.entity] ||
+			oldHass.states["sun.sun"] !== element.hass.states["sun.sun"]
+		);
+	}
 
-  return true;
+	return true;
 }
 
 class WeatherCard extends LitElement {
-  static get properties() {
-    return {
-      _config: {},
-      _forecastEvent: {},
-      hass: {},
-    };
-  }
+	static get properties() {
+		return {
+			_config: {},
+			_forecastEvent: {},
+			hass: {},
+		};
+	}
 
-  static getConfigForm() {
-    return {
-      schema: [
-        {
-          name: "entity",
-          required: true,
-          selector: { entity: { domain: "weather" } },
-        },
-        {
-          name: "name",
-          selector: { text: {} },
-        },
-        { name: "current", default: true, selector: { boolean: {} } },
-        { name: "details", default: true, selector: { boolean: {} } },
-        { name: "forecast", default: true, selector: { boolean: {} } },
-        {
-          name: "forecast_type",
-          default: "daily",
-          selector: {
-            select: {
-              options: [
-                { value: "hourly", label: "Hourly" },
-                { value: "daily", label: "Daily" },
-              ],
-            },
-          },
-        },
-        { name: "number_of_forecasts", default: 5, selector: { number: {} } },
-      ],
-    };
-  }
+	static getConfigForm() {
+		return {
+			schema: [{
+					name: "entity",
+					required: true,
+					selector: {
+						entity: {
+							domain: "weather"
+						}
+					},
+				},
+				{
+					name: "name",
+					selector: {
+						text: {}
+					},
+				},
+				{
+					name: "current",
+					default: true,
+					selector: {
+						boolean: {}
+					}
+				},
+				{
+					name: "details",
+					default: true,
+					selector: {
+						boolean: {}
+					}
+				},
+				{
+					name: "forecast",
+					default: true,
+					selector: {
+						boolean: {}
+					}
+				},
+				{
+					name: "forecast_type",
+					default: "daily",
+					selector: {
+						select: {
+							options: [{
+									value: "hourly",
+									label: "Hourly"
+								},
+								{
+									value: "daily",
+									label: "Daily"
+								},
+							],
+						},
+					},
+				},
+				{
+					name: "number_of_forecasts",
+					default: 5,
+					selector: {
+						number: {}
+					}
+				},
+			],
+		};
+	}
 
-  static getStubConfig(hass, unusedEntities, allEntities) {
-    let entity = unusedEntities.find((eid) => eid.split(".")[0] === "weather");
-    if (!entity) {
-      entity = allEntities.find((eid) => eid.split(".")[0] === "weather");
-    }
-    return { entity };
-  }
+	static getStubConfig(hass, unusedEntities, allEntities) {
+		let entity = unusedEntities.find((eid) => eid.split(".")[0] === "weather");
+		if (!entity) {
+			entity = allEntities.find((eid) => eid.split(".")[0] === "weather");
+		}
+		return {
+			entity
+		};
+	}
 
-  setConfig(config) {
-    if (!config.entity) {
-      throw new Error("Please define a weather entity");
-    }
-    this._config = { forecast_type: "daily", ...config };
-  }
+	setConfig(config) {
+		if (!config.entity) {
+			throw new Error("Please define a weather entity");
+		}
+		this._config = {
+			forecast_type: "daily",
+			...config
+		};
+	}
 
-  _needForecastSubscription() {
-    return (
-      this._config &&
-      this._config.forecast !== false &&
-      this._config.forecast_type &&
-      this._config.forecast_type !== "legacy"
-    );
-  }
+	_needForecastSubscription() {
+		return (
+			this._config &&
+			this._config.forecast !== false &&
+			this._config.forecast_type &&
+			this._config.forecast_type !== "legacy"
+		);
+	}
 
-  _unsubscribeForecastEvents() {
-    if (this._subscribed) {
-      this._subscribed.then((unsub) => unsub());
-      this._subscribed = undefined;
-    }
-  }
+	_unsubscribeForecastEvents() {
+		if (this._subscribed) {
+			this._subscribed.then((unsub) => unsub());
+			this._subscribed = undefined;
+		}
+	}
 
-  async _subscribeForecastEvents() {
-    this._unsubscribeForecastEvents();
-    if (
-      !this.isConnected ||
-      !this.hass ||
-      !this._config ||
-      !this._needForecastSubscription()
-    ) {
-      return;
-    }
+	async _subscribeForecastEvents() {
+		this._unsubscribeForecastEvents();
+		if (
+			!this.isConnected ||
+			!this.hass ||
+			!this._config ||
+			!this._needForecastSubscription()
+		) {
+			return;
+		}
 
-    this._subscribed = this.hass.connection.subscribeMessage(
-      (event) => {
-        this._forecastEvent = event;
-      },
-      {
-        type: "weather/subscribe_forecast",
-        forecast_type: this._config.forecast_type,
-        entity_id: this._config.entity,
-      }
-    );
-  }
+		this._subscribed = this.hass.connection.subscribeMessage(
+			(event) => {
+				this._forecastEvent = event;
+			}, {
+				type: "weather/subscribe_forecast",
+				forecast_type: this._config.forecast_type,
+				entity_id: this._config.entity,
+			}
+		);
+	}
 
-  connectedCallback() {
-    super.connectedCallback();
-    if (this.hasUpdated && this._config && this.hass) {
-      this._subscribeForecastEvents();
-    }
-  }
+	connectedCallback() {
+		super.connectedCallback();
+		if (this.hasUpdated && this._config && this.hass) {
+			this._subscribeForecastEvents();
+		}
+	}
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._unsubscribeForecastEvents();
-  }
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		this._unsubscribeForecastEvents();
+	}
 
-  shouldUpdate(changedProps) {
-    return hasConfigOrEntityChanged(this, changedProps);
-  }
+	shouldUpdate(changedProps) {
+		return hasConfigOrEntityChanged(this, changedProps);
+	}
 
-  updated(changedProps) {
-    if (!this.hass || !this._config) {
-      return;
-    }
-    if (changedProps.has("_config") || !this._subscribed) {
-      this._subscribeForecastEvents();
-    }
-  }
+	updated(changedProps) {
+		if (!this.hass || !this._config) {
+			return;
+		}
+		if (changedProps.has("_config") || !this._subscribed) {
+			this._subscribeForecastEvents();
+		}
+	}
 
-  render() {
-    if (!this._config || !this.hass) {
-      return html``;
-    }
+	render() {
+		if (!this._config || !this.hass) {
+			return html``;
+		}
 
-    this.numberElements = 0;
+		this.numberElements = 0;
 
-    const lang = this.hass.selectedLanguage || this.hass.language;
-    const stateObj = this.hass.states[this._config.entity];
+		const lang = this.hass.selectedLanguage || this.hass.language;
+		const stateObj = this.hass.states[this._config.entity];
 
-    if (!stateObj) {
-      return html`
+		if (!stateObj) {
+			return html`
         <style>
           .not-found {
             flex: 1;
@@ -240,9 +277,9 @@ class WeatherCard extends LitElement {
           </div>
         </ha-card>
       `;
-    }
+		}
 
-    return html`
+		return html`
       <ha-card @click="${this._handleClick}">
         ${this._config.current !== false ? this.renderCurrent(stateObj) : ""}
         ${this._config.details !== false
@@ -259,12 +296,12 @@ class WeatherCard extends LitElement {
           : ""}
       </ha-card>
     `;
-  }
+	}
 
-  renderCurrent(stateObj) {
-    this.numberElements++;
+	renderCurrent(stateObj) {
+		this.numberElements++;
 
-    return html`
+		return html`
       <div class="current ${this.numberElements > 1 ? "spacer" : ""}">
         <span
           class="icon bigger"
@@ -286,21 +323,21 @@ class WeatherCard extends LitElement {
         <span class="tempc"> ${this.getUnit("temperature")}</span>
       </div>
     `;
-  }
+	}
 
-  renderDetails(stateObj) {
-    const sun = this.hass.states["sun.sun"];
-    let next_rising;
-    let next_setting;
+	renderDetails(stateObj) {
+		const sun = this.hass.states["sun.sun"];
+		let next_rising;
+		let next_setting;
 
-    if (sun) {
-      next_rising = new Date(sun.attributes.next_rising);
-      next_setting = new Date(sun.attributes.next_setting);
-    }
+		if (sun) {
+			next_rising = new Date(sun.attributes.next_rising);
+			next_setting = new Date(sun.attributes.next_setting);
+		}
 
-    this.numberElements++;
+		this.numberElements++;
 
-    return html`
+		return html`
       <ul class="variations ${this.numberElements > 1 ? "spacer" : ""}">
         ${this.hass.states["sensor.weather_tomorrow_rain_start_time"].state !== '비안옴'
           ? html`
@@ -348,15 +385,15 @@ class WeatherCard extends LitElement {
           : ""}
       </ul>
     `;
-  }
+	}
 
-  renderForecast(forecast, lang) {
-    if (!forecast || !forecast.forecast || forecast.forecast.length === 0) {
-      return html``;
-    }
+	renderForecast(forecast, lang) {
+		if (!forecast || !forecast.forecast || forecast.forecast.length === 0) {
+			return html``;
+		}
 
-    this.numberElements++;
-    return html`
+		this.numberElements++;
+		return html`
       <div class="forecast clear ${this.numberElements > 1 ? "spacer" : ""}">
         ${forecast.forecast
           .slice(
@@ -415,10 +452,10 @@ class WeatherCard extends LitElement {
           )}
       </div>
     `;
-  }
+	}
 
-  getWeatherIcon(condition, sun) {
-    return `${
+	getWeatherIcon(condition, sun) {
+		return `${
       this._config.icons
         ? this._config.icons
         : "https://cdn.jsdelivr.net/gh/bramkragten/weather-card/dist/icons/"
@@ -427,34 +464,36 @@ class WeatherCard extends LitElement {
         ? weatherIconsNight[condition]
         : weatherIconsDay[condition]
     }.svg`;
-  }
+	}
 
-  getUnit(measure) {
-    const lengthUnit = this.hass.config.unit_system.length;
-    switch (measure) {
-      case "air_pressure":
-        return lengthUnit === "km" ? "hPa" : "inHg";
-      case "length":
-        return lengthUnit;
-      case "precipitation":
-        return lengthUnit === "km" ? "mm" : "in";
-      case "precipitation_probability":
-        return "%";
-      default:
-        return this.hass.config.unit_system[measure] || "";
-    }
-  }
+	getUnit(measure) {
+		const lengthUnit = this.hass.config.unit_system.length;
+		switch (measure) {
+			case "air_pressure":
+				return lengthUnit === "km" ? "hPa" : "inHg";
+			case "length":
+				return lengthUnit;
+			case "precipitation":
+				return lengthUnit === "km" ? "mm" : "in";
+			case "precipitation_probability":
+				return "%";
+			default:
+				return this.hass.config.unit_system[measure] || "";
+		}
+	}
 
-  _handleClick() {
-    fireEvent(this, "hass-more-info", { entityId: this._config.entity });
-  }
+	_handleClick() {
+		fireEvent(this, "hass-more-info", {
+			entityId: this._config.entity
+		});
+	}
 
-  getCardSize() {
-    return 3;
-  }
+	getCardSize() {
+		return 3;
+	}
 
-  static get styles() {
-    return css`
+	static get styles() {
+		return css`
       ha-card {
         cursor: pointer;
         margin: auto;
@@ -657,6 +696,6 @@ class WeatherCard extends LitElement {
         width: 30%;
       }
     `;
-  }
+	}
 }
 customElements.define("weather-card", WeatherCard);
